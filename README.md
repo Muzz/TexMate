@@ -1,6 +1,6 @@
 # TexMate
 
-[Texture Packer](https://www.codeandweb.com/texturepacker) importer and animation helper library for LÖVE.
+[Texture Packer](https://www.codeandweb.com/texturepacker) and [ShoeBox](http://renderhjs.net/shoebox/) importer and animation helper library for LÖVE.
 
 Atlas importer is designed to use the corona exporter from texture packer. It keeps all animations related to a player sprite handy.
 
