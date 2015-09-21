@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _M = CLASS("texmate")
+local _M = {}
 --pass in the atlas, and it will make a deck, and preseve offset data. 
 --framerate, works as a global number
 
