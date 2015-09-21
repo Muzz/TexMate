@@ -16,7 +16,7 @@ USAGE:
 	TexMate = require("TexMate")
 
 	--Load atlas you want to use 
-	myAtlas = AtlasImporter.loadAtlas("ASSETS.Atlas",ASSETS.Atlas.png")
+	myAtlas = AtlasImporter.loadAtlas("ASSETS.Atlas", "ASSETS.Atlas.png")
 
 
 	animlist = {}
