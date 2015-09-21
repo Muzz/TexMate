@@ -1,9 +1,9 @@
 # TexMate
-Texture packer importer and animation library. 
+Texture packer importer and animation library for love2d
 
 Written by Murry Lancashire
 
-Atlas importer is designed to use the corona exporter from texture packer. 
+Atlas importer is designed to use the corona exporter from texture packer. https://www.codeandweb.com/texturepacker
 It keeps all animations related to a player sprite handy. 
 
 Texture packer automatically combines unique frames but keeps references, and preserves offset data after automatic trimming. 
