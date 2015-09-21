@@ -1,5 +1,5 @@
 # TexMate
-Texture packer importer and animation library for love2d
+Texture packer importer and animation library for LÖVE
 
 Written by Murry Lancashire
 
