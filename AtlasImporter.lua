@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 local _M = {}
 
-function _M.loadAtlas(lua,png)
+function _M.loadAtlasTexturePacker(lua,png)
     local TextureAtlas = {}
     --atlas file is exported from texture packer
     local atlas = require (lua)
@@ -69,5 +69,54 @@ function _M.loadAtlas(lua,png)
 
     return TextureAtlas
 end
+
+
+
+
+function _M.loadAtlasShoeBox(lua,png)
+    local TextureAtlas = {}
+    --atlas file is exported from texture packer
+    local data = require (lua)
+    --local data = atlas.getSpriteSheetData()
+
+
+    --frames holds the data that we need to interpret
+    local frames = data.sheetData.frames
+    local tex = love.graphics.newImage( png )
+
+    local Quads = {}
+    --extra holds the offset data
+    local Extra = {}
+    local Size = {}
+
+    --make sure offsets and quads are all right
+    for i=1,#frames do
+        local rect = {width = frames[i].width,height = frames[i].height,x = frames[i].x,y = frames[i].y} 
+        local offset = {x = frames[i].sourceX,y = frames[i].sourceY}
+
+        local x = rect.x
+        local y = rect.y
+        local height = rect.height
+        local width = rect.width
+        local th = tex:getHeight ()
+        local tw = tex:getWidth ()
+
+        Quads[frames[i].name] = love.graphics.newQuad(x, y, width, height, tw,th )
+
+        Extra[frames[i].name] = {offset.x,offset.y}
+
+        Size[frames[i].name] = {width = frames[i].sourceWidth,height = frames[i].sourceHeight}
+
+    end
+
+    TextureAtlas.quads = Quads
+    TextureAtlas.texture = tex
+    TextureAtlas.extra = Extra
+    TextureAtlas.size = Size
+    TextureAtlas.importer = "shoebox"
+    
+    return TextureAtlas
+end
+
 
 return _M

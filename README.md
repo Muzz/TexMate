@@ -6,34 +6,65 @@ Atlas importer is designed to use the corona exporter from texture packer. It ke
 
 Texture packer automatically combines unique frames but keeps references, and preserves offset data after automatic trimming.
 
+Texmate is made supporting class commons and requires a class library. https://github.com/bartbes/Class-Commons
+
 ## Usage
 
 ```lua
-local AtlasImporter = require("AtlasImporter")
-local TexMate = require("TexMate")
+--Class commons library
+class = require("middleclass")
 
--- Load atlas you want to use
-local myAtlas = AtlasImporter.loadAtlas("ASSETS.Atlas", "ASSETS.Atlas.png")
+AtlasImporter = require("AtlasImporter")
+TexMate = require("TexMate")
 
-local animlist = {
-  Death = {
-    "Dieing001",
-    "Dieing002",
-    "Dieing003"
-  }
-  Run = {
-    "Running001",
-    "Running002",
-    "Running003"
-  }
-}
+function love.load ()
 
---make the sprite , args: Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot
---Pivot x and y is an offset from the center of the image.
+    --Load atlas you want to use
 
-self.sprite = TexMate(myAtlas,animlist,"Death",nil,nil,0,-30)
+    --myAtlas = AtlasImporter.loadAtlasShoeBox("ASSETS/sprites","ASSETS/sprites.png")
+    myAtlas = AtlasImporter.loadAtlasTexturePacker("ASSETS/spriteTP2","ASSETS/spriteTP.png")
 
-self.sprite:changeAnim("Run")
+    -- use the exporter marked Corona TM SDK from texture packer. 
+    -- If using shoebox, use the settings file provided
+
+    animlist = {}
+    animlist["Death"] = {
+        framerate = 14,
+        frames = {
+                "Death001",
+                "Death002",
+                "Death003",
+
+                }
+        }
+
+    animlist["Run"] = {
+        framerate = 14,
+        frames = {
+                "Run001",
+                "Run002",
+                "Run003",
+
+                }
+        }
+
+    --make the sprite , arguments: atlas, animlist, defaultanim, x, y, pivotx, pivoty, rotation
+    --Pivot x and y is an offset from the center of the image.
+
+    sprite = TexMate(myAtlas,animlist,"Death",nil,nil,0,-30)
+
+    sprite:changeAnim("Run")
+
+end
+
+function love.update(dt)
+    sprite:update(dt)
+end
+
+function love.draw()
+    sprite:draw()
+end
+
 ```
 
 ## Credits

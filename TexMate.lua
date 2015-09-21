@@ -24,7 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-local _M = {}
+
+--This library uses class commons
+local _M = class('texmate')
 --pass in the atlas, and it will make a deck, and preseve offset data. 
 --framerate, works as a global number
 
@@ -41,7 +43,7 @@ end
 
 function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot)
 
-	self.Atlas = Atlas
+	self.atlas = Atlas
 	self.animlist = animlist
 	self.activeAnim = defaultanim
 	self.offset = {}
@@ -56,6 +58,12 @@ function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot)
 	self.scale = {}
 	self.scale.x = scalex or 1
 	self.scale.y = scaley or 1
+
+	if self.atlas.importer == "shoebox" then
+		self.extension = ""
+	else
+		self.extension = ".png"	
+	end
 
 end
 
@@ -85,7 +93,7 @@ function _M:getLoc()
 	return self.x,self.y 
 end
 
-function  _M:Destroy ()
+function  _M:destroy ()
 	print("destroying animation")
 end
 
@@ -116,11 +124,13 @@ function _M:draw ()
 	self.batch:clear()
 	self.batch:bind()
 
+
+
 		--find the center of the sprite. 
-		local tempWidth = self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..".png"].width/2
-		local tempHeight = self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..".png"].height/2
-		local atlas = self.Atlas.quads[self.animlist[self.activeAnim].frames[round(self.iterator)]..".png"]
-		local extra = self.Atlas.extra[self.animlist[self.activeAnim].frames[round(self.iterator)]..".png"]
+		local tempWidth = self.atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension].width/2
+		local tempHeight = self.atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension].height/2
+		local atlas = self.atlas.quads[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension]
+		local extra = self.atlas.extra[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension]
 
 		--id = SpriteBatch:add( quad, x, y, r, sx, sy, ox, oy, kx, ky )
 		--r is in radians
