@@ -1,5 +1,5 @@
 # TexMate
-Texture packer importer and animation library for love2d
+Texture packer importer and animation library for LÖVE
 
 Written by Murry Lancashire
 
@@ -10,11 +10,13 @@ Texture packer automatically combines unique frames but keeps references, and pr
 
 USAGE:
 
+```lua
+
 	AtlasImporter = require("AtlasImporter")
 	TexMate = require("TexMate")
 
 	--Load atlas you want to use 
-	myAtlas = AtlasImporter.loadAtlas("ASSETS.Atlas",ASSETS.Atlas.png")
+	myAtlas = AtlasImporter.loadAtlas("ASSETS.Atlas", "ASSETS.Atlas.png")
 
 
 	animlist = {}
@@ -54,3 +56,4 @@ USAGE:
 	self.sprite = TexMate(myAtlas,animlist,"Death",nil,nil,0,-30)
 
 	self.sprite:changeAnim("Run")
+```
