@@ -10,6 +10,8 @@ Texture packer automatically combines unique frames but keeps references, and pr
 
 USAGE:
 
+```lua
+
 	AtlasImporter = require("AtlasImporter")
 	TexMate = require("TexMate")
 
@@ -54,3 +56,4 @@ USAGE:
 	self.sprite = TexMate(myAtlas,animlist,"Death",nil,nil,0,-30)
 
 	self.sprite:changeAnim("Run")
+```
