@@ -150,7 +150,7 @@ function _M:draw ()
 	self.batch:clear()
 	self.batch:bind()
 
-    print(self.animlist[self.activeAnim].frames[round(self.iterator)])
+    assert(self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]],"frame "..self.animlist[self.activeAnim].frames[round(self.iterator)].." Doesn't exist")
 
 		--find the center of the sprite.
 		local tempWidth = self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]].width/2
