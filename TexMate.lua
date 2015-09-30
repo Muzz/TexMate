@@ -1,33 +1,5 @@
---[[
-Copyright (c) 2015 Murry Lancashire
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-Except as contained in this notice, the name(s) of the above copyright holders
-shall not be used in advertising or otherwise to promote the sale, use or
-other dealings in this Software without prior written authorization.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-]]--
-
-
---This library uses class commons
-local _M = class('texmate')
---pass in the atlas, and it will make a deck, and preseve offset data. 
+local _M = CLASS("texmate")
+--pass in the atlas, and it will make a deck, and preseve offset data.
 --framerate, works as a global number
 
 function round(num, idp)
@@ -41,9 +13,11 @@ function round(num, idp)
 
 end
 
-function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot)
+function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot,flip,scale)
 
-	self.atlas = Atlas
+  if flip == true then flip = -1 elseif flip == false then flip = 1 end
+
+	self.Atlas = Atlas
 	self.animlist = animlist
 	self.activeAnim = defaultanim
 	self.offset = {}
@@ -56,16 +30,34 @@ function _M:initialize (Atlas,animlist,defaultanim,x,y,pivotx,pivoty,rot)
 	self.y = y or 100
 	self.rot = rot or 0
 	self.scale = {}
-	self.scale.x = scalex or 1
-	self.scale.y = scaley or 1
+	self.scale.x = scale or 1
+	self.scale.y = scale or 1
+  self.flip = flip or 1
+  self.endCallback = {}
 
-	if self.atlas.importer == "shoebox" then
-		self.extension = ""
-	else
-		self.extension = ".png"	
-	end
+  if flip then
+    self.scale.x = self.scale.x *-1
+  end
 
 end
+
+function _M:frameCounter(name,rangefrom,rangeto,padding,extension)
+
+  local count = rangeto - rangefrom
+  names = {}
+  pad = padding or 4
+
+  for i=1,count+1 do
+    local string = string.format("%0"..pad.."i", i-1+rangefrom)
+
+    if extension then string = string .. extension end
+    names[i] = name .. string
+  end
+  print("output",unpack(names))
+  return unpack(names)
+end
+
+
 
 function _M:pause ()
 	self.active = false
@@ -75,8 +67,23 @@ function _M:play ()
 	self.active = true
 end
 
-function _M:changeAnim (anim)
+--dir is a flip value, if is > 0 no flip, else is flipped
+function _M:changeAnim (anim,dir)
+  self.active = true
+
+  if self.activeAnim ~= anim then
+   self.iterator = 1
+  end
+
+  dir = dir or 1
 	self.activeAnim = anim
+
+  if dir < 0 then
+    self.flip = -1
+  else
+    self.flip = 1
+  end
+
 end
 
 function _M:changeLoc (x,y)
@@ -84,21 +91,31 @@ function _M:changeLoc (x,y)
 	self.y = y or self.y
 end
 
---rot is in degrees
 function _M:changeRot(angle)
-	self.rot = angle 
+	self.rot = angle
+end
+
+function _M:changeRotVec(vec)
+
+
+  self.rot = math.deg(math.atan2(vec.y,vec.x))+90
 end
 
 function _M:getLoc()
-	return self.x,self.y 
+	return self.x,self.y
 end
 
-function  _M:destroy ()
+function  _M:Destroy ()
 	print("destroying animation")
 end
 
+
 function _M:update (dt)
 
+  if self.docallback then
+    self.endCallback[self.activeAnim]()
+    self.docallback = nil
+  end
 
 	--Active is whether we want the sprite to animate or not. We increment an iterator using delta time to keep things frame rate independent
 	if self.active == true then
@@ -107,30 +124,39 @@ function _M:update (dt)
 
 		if self.iterator > #self.animlist[self.activeAnim].frames then
 			self.iterator = 1
+
+      if self.endCallback[self.activeAnim] ~= nil then self.docallback = true end
+
 		end
 		if self.iterator < 1 then
 			self.iterator = 1
 		end
 
 	end
+
+
+
 end
 
 function _M:draw ()
-	--Reset graphics colour back to white 
+
+
+
+	--Reset graphics colour back to white
 	love.graphics.setColor(255,255,255,255)
 
 
-	--Binds the SpriteBatch to memory for more efficient updating. 
+	--Binds the SpriteBatch to memory for more efficient updating.
 	self.batch:clear()
 	self.batch:bind()
 
+    print(self.animlist[self.activeAnim].frames[round(self.iterator)])
 
-
-		--find the center of the sprite. 
-		local tempWidth = self.atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension].width/2
-		local tempHeight = self.atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension].height/2
-		local atlas = self.atlas.quads[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension]
-		local extra = self.atlas.extra[self.animlist[self.activeAnim].frames[round(self.iterator)]..self.extension]
+		--find the center of the sprite.
+		local tempWidth = self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]].width/2
+		local tempHeight = self.Atlas.size[self.animlist[self.activeAnim].frames[round(self.iterator)]].height/2
+		local atlas = self.Atlas.quads[self.animlist[self.activeAnim].frames[round(self.iterator)]]
+		local extra = self.Atlas.extra[self.animlist[self.activeAnim].frames[round(self.iterator)]]
 
 		--id = SpriteBatch:add( quad, x, y, r, sx, sy, ox, oy, kx, ky )
 		--r is in radians
@@ -139,9 +165,9 @@ function _M:draw ()
 						self.x, --x
 						self.y, --y
 						math.rad(self.rot), -- rot
-						self.scale.x, -- scale x
+						self.scale.x*self.flip, -- scale x
 						self.scale.y, -- scale y
-						-extra[1]+tempWidth-self.offset.x, --pivotx, needs to add in the trimming data here. 
+						-extra[1]+tempWidth-self.offset.x, --pivotx, needs to add in the trimming data here.
 						-extra[2]+tempHeight-self.offset.y -- pivoty
 					)
 
