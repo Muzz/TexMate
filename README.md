@@ -6,14 +6,11 @@ Atlas importer is designed to use the corona exporter from texture packer. It ke
 
 Texture packer automatically combines unique frames but keeps references, and preserves offset data after automatic trimming.
 
-Texmate is made supporting class commons and requires a class library. https://github.com/bartbes/Class-Commons
+Texmate requires a specific class library, [middleclass](https://github.com/bartbes/Class-Commons), to be on the `packages.path`. Supporting for [class commons](https://github.com/bartbes/Class-Commons) is planned for a later release.
 
 ## Usage
 
 ```lua
---Class commons library
-class = require("middleclass")
-
 AtlasImporter = require("AtlasImporter")
 TexMate = require("TexMate")
 
@@ -24,7 +21,7 @@ function love.load ()
     --myAtlas = AtlasImporter.loadAtlasShoeBox("ASSETS/sprites","ASSETS/sprites.png")
     myAtlas = AtlasImporter.loadAtlasTexturePacker("ASSETS/spriteTP2","ASSETS/spriteTP.png")
 
-    -- use the exporter marked Corona TM SDK from texture packer. 
+    -- use the exporter marked Corona TM SDK from texture packer.
     -- If using shoebox, use the settings file provided
 
     animlist = {}
