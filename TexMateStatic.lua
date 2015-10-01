@@ -13,8 +13,8 @@ function round(num, idp)
 
 end
 
-function _M:initialize (Atlas,imageid,x,y,pivotx,pivoty,rot,flip,scale)
-
+function _M:initialize (Atlas,imageid,x,y,pivotx,pivoty,rot,flip,scalex,scaley,offsetstyle)
+  self.offsetStyle = offsetstyle or "topleft"
 	self.Atlas = Atlas
 	self.image = imageid
 	self.offset = {}
@@ -26,13 +26,20 @@ function _M:initialize (Atlas,imageid,x,y,pivotx,pivoty,rot,flip,scale)
 	self.y = y or 100
 	self.rot = rot or 0
 	self.scale = {}
-	self.scale.x = scale or 1
-	self.scale.y = scale or 1
+	self.scale.x = scalex or 1
+	self.scale.y = scaley or scalex or 1
   self.flip = -1
   self.endCallback = {}
 
   if flip then
     self.scale.x = self.scale.x *-1
+  end
+
+  --ofs is the number that it uses to work out the offset.
+  if self.offsetStyle == "center" then
+      self.ofs = 0.5
+  else
+      self.ofs = 1
   end
 
 end
@@ -65,8 +72,8 @@ function _M:draw ()
 	self.batch:bind()
 
 		--find the center of the sprite.
-		local tempWidth = self.Atlas.size[self.image].width
-		local tempHeight = self.Atlas.size[self.image].height
+		local tempWidth = self.Atlas.size[self.image].width*self.ofs
+		local tempHeight = self.Atlas.size[self.image].height*self.ofs
 		local atlas = self.Atlas.quads[self.image]
 		local extra = self.Atlas.extra[self.image]
 
