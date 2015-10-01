@@ -13,7 +13,8 @@ function round(num, idp)
 
 end
 
-function _M:initialize (Atlas,imageid,x,y,pivotx,pivoty,rot,flip,scalex,scaley,offsetstyle)
+function _M:initialize (Atlas,imageid,x,y,pivotx,pivoty,rot,flip,scalex,scaley,offsetstyle,ignoretrim)
+  self.ignoretrim = ignoretrim or false
   self.offsetStyle = offsetstyle or "topleft"
 	self.Atlas = Atlas
 	self.image = imageid
@@ -76,6 +77,11 @@ function _M:draw ()
 		local tempHeight = self.Atlas.size[self.image].height*self.ofs
 		local atlas = self.Atlas.quads[self.image]
 		local extra = self.Atlas.extra[self.image]
+
+    if ignoretrim then
+        extra[1] = 0
+        extra[2] = 0
+    end
 
 		self.batch:add( atlas,
 						self.x, --x
