@@ -1,4 +1,6 @@
-local _M = CLASS("texmate")
+local class = require('middleclass')
+
+local _M = class("texmate")
 --pass in the atlas, and it will make a deck, and preseve offset data.
 --framerate, works as a global number
 
